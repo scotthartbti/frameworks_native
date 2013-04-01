@@ -873,8 +873,15 @@ EGLBoolean eglSwapBuffers(EGLDisplay dpy, EGLSurface draw)
                     GL_RGBA,GL_UNSIGNED_BYTE,&pixel);
         }
     }
+    EGLBoolean result;
+#ifdef MISSING_EGL_EXTERNAL_IMAGE
+    s->cnx->egl.eglSwapBuffers(dp->disp.dpy, s->surface);
+    result = EGL_TRUE;
+#else
+    result = s->cnx->egl.eglSwapBuffers(dp->disp.dpy, s->surface);
+#endif
 
-    EGLBoolean result = s->cnx->egl.eglSwapBuffers(dp->disp.dpy, s->surface);
+    
 
     if (CC_UNLIKELY(dp->traceGpuCompletion)) {
         EGLSyncKHR sync = EGL_NO_SYNC_KHR;

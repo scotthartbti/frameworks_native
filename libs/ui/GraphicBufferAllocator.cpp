@@ -244,6 +244,14 @@ status_t GraphicBufferAllocator::alloc(uint32_t w, uint32_t h,
         err = mAllocDev->alloc(mAllocDev, w, h, format, usage, handle, stride);
 #endif
     }
+#ifdef MISSING_EGL_PIXEL_FORMAT_YV12
+    if (format == HAL_PIXEL_FORMAT_YV12) {
+	format = HAL_PIXEL_FORMAT_RGBX_8888;
+    }
+    if (usage & GRALLOC_USAGE_EXTERNAL_DISP) {
+	usage ^= GRALLOC_USAGE_EXTERNAL_DISP;
+    }
+#endif
 
 #ifdef QCOM_BSP
     ALOGW_IF(err, "alloc(%u, %u, %d, %08x, %d ...) failed %d (%s)",
